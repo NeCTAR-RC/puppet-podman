@@ -7,10 +7,6 @@
   "source": "",
   "dependencies": [
     {
-      "name": "herculesteam/augeasproviders_sysctl",
-      "version_requirement": ">= 2.0.0 < 3.0.0"
-    },
-    {
       "name": "puppetlabs/stdlib",
 	  "version_requirement": ">= 6.0.0 < 7.0.0"
     },
