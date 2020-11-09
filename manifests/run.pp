@@ -57,6 +57,7 @@ define podman::run (
       {
         'image'                 => $image,
         'container_tag'         => $container_tag,
+        'command'               => $command,
         'volumes'               => $volumes,
         'container_extra_flags' => $container_extra_flags,
         'podman_extra_args'     => $podman_extra_args,

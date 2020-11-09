@@ -30,7 +30,8 @@ ExecStart=/usr/bin/podman run \
   $PUBLISH_PORTS \
   $ENV_VARS \
   $PODMAN_EXTRA_ARGS \
-  ${IMAGE}:${TAG} $CONTAINER_EXTRA_FLAGS
+  ${IMAGE}:${TAG} $CONTAINER_EXTRA_FLAGS \
+  ${COMMAND}
 
 ExecStop=/usr/bin/sh -c "/usr/bin/podman rm -f `cat /%T/%n-cid`"
 

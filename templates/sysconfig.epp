@@ -1,6 +1,7 @@
 <%- |
   Optional[String] $image = '',
   Optional[String] $container_tag = 'latest',
+  Optional[String] $command = undef,
   Optional[String] $podman_extra_args = undef,
   Optional[String] $container_extra_flags = undef,
   Optional[Array]  $ports = undef,
@@ -53,4 +54,6 @@ $volumes_list = $volumes.map |$volume| {
 VOLUMES="<%= $volumes_list -%>"
 <% } -%>
 
-
+<% if $command != undef { -%>
+COMMAND="<%= $command %>"
+<% } -%>
