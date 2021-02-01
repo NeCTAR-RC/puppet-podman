@@ -66,5 +66,6 @@ define podman::run (
       }
     ),
     replace => $manage_environment_file,
+    notify  => Systemd::Unit_file["${name}-container.service"],
   }
 }
