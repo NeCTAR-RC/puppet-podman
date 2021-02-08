@@ -5,6 +5,18 @@
 # @example
 #   include podman::install
 class podman::install {
+
+  case $::facts['os']['name'] {
+    'Ubuntu': {
+      include podman::repo::ubuntu
+    }
+    'RedHat', 'CentOS': {
+    }
+    default: {
+      fail("${::facts['os']['name']} is not supported")
+    }
+  }
+
   package { 'slirp4netns':
     ensure => present,
   }
