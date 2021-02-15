@@ -1,0 +1,43 @@
+<%- |
+  String $environment_file,
+  String $sanitised_title,
+  String $description,
+  Optional[String] $depends_on_svc = undef,
+| -%>
+[Unit]
+Description=<%= $description %>
+<% if $depends_on_svc != undef { -%>
+After=<%= $depends_on_svc %>
+Requires=<%= $depends_on_svc %>
+<% } -%>
+
+[Service]
+Restart=on-failure
+Type=forking
+TimeoutStartSec=5m
+EnvironmentFile=<%= $environment_file %>
+
+
+ExecStartPre=-/bin/bash -c "((/usr/bin/podman ps -a --format '{{.Names}}' | /bin/grep -Eq '^<%= $sanitised_title %>-container$') && /usr/bin/podman rm <%= $sanitised_title %>-container || /bin/true)"
+ExecStartPre=/bin/rm -f /%t/%n-pid /%t/%n-cid
+
+ExecStart=/usr/bin/podman run \
+  --conmon-pidfile=/%t/%n-pid \
+  --cidfile=/%t/%n-cid \
+  --name %N \
+  --detach \
+  $VOLUMES \
+  $PUBLISH_PORTS \
+  $ENV_VARS \
+  $PODMAN_EXTRA_ARGS \
+  ${IMAGE}:${TAG} $CONTAINER_EXTRA_FLAGS \
+  ${COMMAND}
+
+ExecStop=/bin/sh -c "/usr/bin/podman rm -f `cat /%t/%n-cid`"
+
+RestartSec=30
+KillMode=none
+PIDFile=/%t/%n-pid
+
+[Install]
+WantedBy=default.target
