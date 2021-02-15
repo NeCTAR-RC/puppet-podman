@@ -18,12 +18,12 @@ TimeoutStartSec=5m
 EnvironmentFile=<%= $environment_file %>
 
 
-ExecStartPre=-/usr/bin/bash -c "((/usr/bin/podman ps -a --format '{{.Names}}' | /usr/bin/grep -Eq '^<%= $sanitised_title %>-container$') && /usr/bin/podman rm <%= $sanitised_title %>-container || /bin/true)"
-ExecStartPre=/usr/bin/rm -f /%T/%n-pid /%T/%n-cid
+ExecStartPre=-/bin/bash -c "((/usr/bin/podman ps -a --format '{{.Names}}' | /bin/grep -Eq '^<%= $sanitised_title %>-container$') && /usr/bin/podman rm <%= $sanitised_title %>-container || /bin/true)"
+ExecStartPre=/bin/rm -f /%t/%n-pid /%t/%n-cid
 
 ExecStart=/usr/bin/podman run \
-  --conmon-pidfile=/%T/%n-pid \
-  --cidfile=/%T/%n-cid \
+  --conmon-pidfile=/%t/%n-pid \
+  --cidfile=/%t/%n-cid \
   --name %N \
   --detach \
   $VOLUMES \
@@ -33,11 +33,11 @@ ExecStart=/usr/bin/podman run \
   ${IMAGE}:${TAG} $CONTAINER_EXTRA_FLAGS \
   ${COMMAND}
 
-ExecStop=/usr/bin/sh -c "/usr/bin/podman rm -f `cat /%T/%n-cid`"
+ExecStop=/bin/sh -c "/usr/bin/podman rm -f `cat /%t/%n-cid`"
 
 RestartSec=30
 KillMode=none
-PIDFile=/%T/%n-pid
+PIDFile=/%t/%n-pid
 
 [Install]
 WantedBy=default.target
