@@ -31,10 +31,16 @@ define podman::run (
     $systemd_unit_file_path = '/etc/systemd/system'
   }
 
+  if $facts['os']['name'] == 'Ubuntu' and versioncmp($facts['os']['distro']['release']['full'], '20.04') < 0 {
+    $template='podman/container.service.prefocal.epp'
+  } else {
+    $template='podman/container.service.epp'
+  }
+
   systemd::unit_file { "${name}-container.service":
     path    => $systemd_unit_file_path,
     content => epp(
-      'podman/container.service.epp',
+      $template,
       {
         'description'      => sprintf('%s container', capitalize($name)),
         'sanitised_title'  => regsubst($title, '[^0-9A-Za-z.\-_]', '-', 'G'),
