@@ -20,6 +20,11 @@ class podman::install {
   package { 'slirp4netns':
     ensure => present,
   }
+
+  package { 'containernetworking-plugins':
+    ensure => present,
+  }
+
   package { 'podman':
     ensure => present,
   }
